@@ -8,10 +8,10 @@ fs.createReadStream('images/input/monkey.png')
     }))
     .on('parsed', function() {
 
-        this.data = evoart.mutate(this, 'uv');
+        this.data = evoart.mutate(this, 'uv', '8bit');
 
         // convert to dna and back again, should get original image
-        // this.data = evoart.dna2Img( evoart.img2Dna(this) );
+        // this.data = evoart.dna2Img( evoart.img2Dna(this, '8bit'), '8bit' );
 
         this.pack().pipe(fs.createWriteStream('out.png'));
     });
