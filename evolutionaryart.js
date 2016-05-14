@@ -10,5 +10,8 @@ fs.createReadStream('images/input/monkey.png')
 
         this.data = evoart.mutate(this, 'uv');
 
+        // convert to dna and back again, should get original image
+        // this.data = evoart.dna2Img( evoart.img2Dna(this) );
+
         this.pack().pipe(fs.createWriteStream('out.png'));
     });
