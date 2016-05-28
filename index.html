@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+
+	<script type="text/javascript" src="evodeco.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<style type="text/css">
+		#orig-image,#new-image { margin-top: 20px; text-align: center; width: 100%; }
+
+		.btn-toolbar { width: 194px; margin: auto; }
+
+		.spinner { position: absolute; top: 300px; width: 334px; left: 50%; margin-left: -167px; font-size: 50px; display: none; }
+		.spinner img { height: 120px; }
+	</style>
+</head>
+<body>
+	<div class='spinner'>
+		Mutating <img src="assets/img/spinner.gif"/>
+	</div>
+	<div class='container'>
+
+		<div class='center-block text-center'>
+			<h1>EvoDeco</h1>
+
+			<div class="btn-toolbar" role="toolbar" aria-label="...">
+				<label class="btn btn-default btn-file">
+				    Choose File <input type="file" onchange="readImage(this);" style="display: none;">
+				</label>
+				<div class="dropdown">
+				  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+				    Mutate
+				    <span class="caret"></span>
+				  </button>
+				  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+				    <li><a href="#" onclick="mutate(this)">UV</a></li>
+				    <li><a href="#" onclick="mutate(this)">Large Deletion</a></li>
+				    <li><a href="#" onclick="mutate(this)">Frameshift Deletion</a></li>
+				  </ul>
+				</div>
+			</div>
+
+
+		</div>
+		<div id='orig-image'>
+			<img />
+		</div>
+
+		<div id='new-image'>
+			<canvas></canvas>
+		</div>
+	</div>
+
+	<script>
+		function toCanvas(img) {
+			var canvas = document.querySelector('#new-image canvas');
+			canvas.width = img.width;
+			canvas.height = img.height;
+			canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
+		}
+
+		function mutate(elem) {
+			document.querySelector('.spinner').style.display='block';
+			setTimeout(function() {
+				var canvas = document.querySelector('#new-image canvas');
+				var pixelData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
+
+				var mutation = elem.innerHTML;
+				if (mutation == 'Large Deletion')
+					var pixels = evodeco.mutate(pixelData, 'deletion', '24bit', {deletionPercent: 0.01});
+				else if (mutation == 'Frameshift Deletion')
+					var pixels = evodeco.mutate(pixelData, 'frameshift', '24bit', {deletionBases: 4});
+				else if (mutation == 'UV')
+					var pixels = evodeco.mutate(pixelData, 'uv', '24bit');
+
+				drawImg(pixels);
+			},1000);
+		}
+
+		function drawImg(pixels) {
+			document.querySelector('.spinner').style.display='none';
+			var canvas = document.querySelector('#new-image canvas');
+			var l = Math.floor(pixels.length / (canvas.width * 4));
+			pixels = pixels.slice(0,l*canvas.width*4);
+			var ud = new Uint8ClampedArray(pixels);
+			var imgData = new ImageData(ud, canvas.width);
+			canvas.getContext('2d').putImageData(imgData, 0, 0);
+		}
+
+		function getPixels(img) {
+		  var c = document.createElement('canvas');
+		  c.width = img.width;
+		  c.height = img.height;
+		  var ctx = c.getContext('2d');
+		  ctx.drawImage(img, 0, 0, img.width, img.height);
+		  return ctx.getImageData(0,0,c.width,c.height);
+		};
+
+		function filterImage (filter, image, var_args) {
+		  var args = [getPixels(image)];
+		  for (var i=2; i<arguments.length; i++) {
+		    args.push(arguments[i]);
+		  }
+		  return filter.apply(null, args);
+		}
+
+		function readImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var origImage = document.querySelector('#orig-image img')
+                origImage.onload = function() {
+                	toCanvas(origImage);
+                	origImage.style.display = 'none';
+                }
+				origImage.src = e.target.result;
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+	</script>
+
+</body>
+</html>

@@ -2,9 +2,10 @@
   "name": "evolutionaryart",
   "version": "0.1.0",
   "description": "using bacteria to create art",
-  "main": "evolutionaryart.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-js": "browserify lib/convert.js > evodeco.js"
   },
   "repository": {
     "type": "git",
@@ -25,5 +26,9 @@
   "dependencies": {
     "extend": "^3.0.0",
     "pngjs": "^2.3.1"
+  },
+  "devDependencies": {
+    "browserify": "^13.0.1",
+    "express": "^4.13.4"
   }
 }
