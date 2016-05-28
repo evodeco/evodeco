@@ -1,5 +1,5 @@
 {
-  "name": "evolutionaryart",
+  "name": "evodecou",
   "version": "0.1.0",
   "description": "using bacteria to create art",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chmille4/evolutionaryart.git"
+    "url": "git+https://github.com/evodeco/evodeco.git"
   },
   "keywords": [
     "art",
@@ -20,9 +20,9 @@
   "author": "Chase Miller",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/chmille4/evolutionaryart/issues"
+    "url": "https://github.com/evodeco/evodeco/issues"
   },
-  "homepage": "https://github.com/chmille4/evolutionaryart#readme",
+  "homepage": "https://github.com/evodeco/evodeco#readme",
   "dependencies": {
     "extend": "^3.0.0",
     "pngjs": "^2.3.1"
